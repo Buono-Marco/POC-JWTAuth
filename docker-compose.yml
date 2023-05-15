@@ -1,0 +1,43 @@
+version: '3'
+services:
+
+  postgres-db:
+    container_name: postgres-db
+    image: postgres:11.5
+    restart: always
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=app_questionario_compliance_db
+      - POSTGRES_USER=postgres_rw_user
+      - POSTGRES_PASSWORD=postgres_rw_password
+    ports:
+      - "5432:5432"
+
+  backend:
+    build:
+      dockerfile: ./Dockerfile
+    container_name: backend
+    ports:
+      - "8080:8080"
+    environment:
+      - DATABASE_URL=jdbc:postgresql://postgres-db:5432/app_questionario_compliance_db
+      - POSTGRES_DB=app_questionario_compliance_db
+      - POSTGRES_USER=postgres_rw_user
+      - POSTGRES_PASSWORD=postgres_rw_password
+    depends_on:
+      - postgres-db
+
+  my-user:
+    build:
+      dockerfile: Dockerfile-MyUser
+    container_name: my-user
+    restart: on-failure
+    ports:
+      - "5000:5000"
+    depends_on:
+      - postgres-db
+      - backend
+
+volumes:
+  db-data:
