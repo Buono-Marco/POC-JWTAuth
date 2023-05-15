@@ -1,0 +1,28 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/app_questionario_compliance_db
+    username: postgres_rw_user
+    password: postgres_rw_password
+    hikari:
+      connectionTimeout: 20000
+      maximumPoolsize: 5
+    jpa:
+      generate-ddl: true
+      show-sql: true
+      hibernate:
+        ddl-auto: create-drop
+      init:
+        mode: always
+  liquibase:
+    change-log: classpath:db/data-jpa/db-changelog.xml
+
+application:
+  security:
+    jwt:
+      secret-key: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
+      expiration: 86400000 # a day
+
+logging:
+  level:
+    org:
+      springframework: INFO
